@@ -9,8 +9,7 @@ public static class EndpointExtensions
     public static WebApplication MapPortfolioEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/portfolio")
-                      .WithTags("Portfolio")
-                      .WithOpenApi();
+                      .WithTags("Portfolio");
 
         // Get portfolio data
         group.MapGet("", GetPortfolio)
@@ -36,8 +35,7 @@ public static class EndpointExtensions
     public static WebApplication MapSectionEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/sections")
-                      .WithTags("Sections")
-                      .WithOpenApi();
+                      .WithTags("Sections");
 
         // Get sections
         group.MapGet("", GetSections)
@@ -75,8 +73,7 @@ public static class EndpointExtensions
     public static WebApplication MapItemEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/items")
-                      .WithTags("Items")
-                      .WithOpenApi();
+                      .WithTags("Items");
 
         // Get items
         group.MapGet("", GetItems)
@@ -202,7 +199,7 @@ public static class EndpointExtensions
 
     private static async Task<IResult> CreateSection([FromBody] CreateSectionRequest request, PortfolioDb db)
     {
-        var site = await db.Sites.FirstOrDefaultAsync(s => s.Slug == request.SiteSlug ?? "surlesmobile");
+        var site = await db.Sites.FirstOrDefaultAsync(s => s.Slug == (request.SiteSlug ?? "surlesmobile"));
         if (site == null) return Results.NotFound(new { error = "Site not found" });
 
         var section = new Section

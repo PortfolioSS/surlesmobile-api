@@ -33,8 +33,8 @@ public class GlobalExceptionMiddleware
         
         var (statusCode, message) = exception switch
         {
-            ArgumentException => (HttpStatusCode.BadRequest, "Invalid request parameters"),
             ArgumentNullException => (HttpStatusCode.BadRequest, "Required parameter is missing"),
+            ArgumentException => (HttpStatusCode.BadRequest, "Invalid request parameters"),
             UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Access denied"),
             KeyNotFoundException => (HttpStatusCode.NotFound, "Resource not found"),
             InvalidOperationException => (HttpStatusCode.Conflict, "Invalid operation"),

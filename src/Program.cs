@@ -95,7 +95,6 @@ app.MapGet("/portfolio", async (string? site, PortfolioDb db) =>
 })
 .WithName("GetPortfolioLegacy")
 .WithTags("Portfolio")
-.WithOpenApi(operation => { operation.Summary = "Get portfolio data (legacy endpoint)"; return operation; })
 .RequireAuthorization("Read");
 
 app.Run();

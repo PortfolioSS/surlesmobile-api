@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SurlesMobile.Api.Services;
 using Serilog;
+using System.Linq;
 
 namespace SurlesMobile.Api.Extensions;
 
@@ -60,15 +61,15 @@ public static class ServiceCollectionExtensions
         {
             options.AddPolicy("Read", policy => policy.RequireAssertion(context =>
                 context.User.IsInRole("viewer") || context.User.IsInRole("editor") || context.User.IsInRole("admin") ||
-                context.User.HasClaim("scope", scope => scope.Split(' ').Contains("portfolio/read"))));
+                context.User.Claims.Any(c => c.Type == "scope" && c.Value.Split(' ').Contains("portfolio/read"))));
 
             options.AddPolicy("Write", policy => policy.RequireAssertion(context =>
                 context.User.IsInRole("editor") || context.User.IsInRole("admin") ||
-                context.User.HasClaim("scope", scope => scope.Split(' ').Contains("portfolio/write"))));
+                context.User.Claims.Any(c => c.Type == "scope" && c.Value.Split(' ').Contains("portfolio/write"))));
 
             options.AddPolicy("Admin", policy => policy.RequireAssertion(context =>
                 context.User.IsInRole("admin") ||
-                context.User.HasClaim("scope", scope => scope.Split(' ').Contains("portfolio/admin"))));
+                context.User.Claims.Any(c => c.Type == "scope" && c.Value.Split(' ').Contains("portfolio/admin"))));
         });
 
         return services;
