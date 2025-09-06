@@ -20,8 +20,8 @@
     <PackageReference Include="AspNetCore.HealthChecks.Npgsql" Version="8.0.1" />
     
     <!-- AWS SDK for Secrets Manager -->
-    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.300.50" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.300" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.*" />
     
     <!-- Validation and Model Binding -->
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
