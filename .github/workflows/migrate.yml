@@ -1,0 +1,29 @@
+name: apply-migrations
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+    paths: [ 'src/**', 'Migrations/**' ]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read }
+    env:
+      AWS_REGION: us-east-1
+      SECRET_ARN: ${{ secrets.DB_CONN_SECRET_ARN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '8.0.x' }
+      - uses: aws-actions/configure-aws-credentials@v4
+        with: { role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}, aws-region: ${{ env.AWS_REGION }} }
+      - name: Fetch DB conn string from Secrets Manager
+        id: sec
+        run: |
+          echo "conn=$(aws secretsmanager get-secret-value --secret-id $SECRET_ARN --query SecretString --output text)" >> $GITHUB_OUTPUT
+      - name: Install EF CLI
+        run: dotnet tool install --global dotnet-ef
+      - name: Apply migrations
+        env: { ConnectionStrings__Default: ${{ steps.sec.outputs.conn }} }
+        run: dotnet ef database update --project src/SurlesMobile.Api.csproj --startup-project src/SurlesMobile.Api.csproj

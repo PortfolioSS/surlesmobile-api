@@ -1,0 +1,25 @@
+name: deploy-api
+on: { push: { branches: [ main ] }, workflow_dispatch: {} }
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read }
+    env:
+      AWS_REGION: us-east-1
+      ECR_REPO: surlesmobile-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '8.0.x' }
+      - run: dotnet build src/SurlesMobile.Api.csproj --configuration Release
+      - uses: aws-actions/configure-aws-credentials@v4
+        with: { role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}, aws-region: ${{ env.AWS_REGION }} }
+      - uses: aws-actions/amazon-ecr-login@v2
+      - name: Build + Push
+        run: |
+          IMAGE_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO --query 'repositories[0].repositoryUri' --output text)
+          docker build -t $IMAGE_URI:latest .
+          docker push $IMAGE_URI:latest
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+      - name: Force ECS deploy
+        run: aws ecs update-service --cluster surlesmobile --service surlesmobile-api --force-new-deployment
