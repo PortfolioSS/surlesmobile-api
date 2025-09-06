@@ -1,0 +1,37 @@
+# Git
+.git/
+.gitignore
+
+# Build artifacts
+bin/
+obj/
+out/
+
+# IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Docker
+Dockerfile*
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# GitHub workflows
+.github/
+
+# Environment files
+.env
+.env.local
