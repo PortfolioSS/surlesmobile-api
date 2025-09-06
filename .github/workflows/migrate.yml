@@ -15,9 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
-        with: { dotnet-version: '8.0.x' }
+        with:
+          dotnet-version: '8.0.x'
       - uses: aws-actions/configure-aws-credentials@v4
-        with: { role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}, aws-region: ${{ env.AWS_REGION }} }
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
       - name: Fetch DB conn string from Secrets Manager
         id: sec
         run: |
@@ -25,5 +28,6 @@ jobs:
       - name: Install EF CLI
         run: dotnet tool install --global dotnet-ef
       - name: Apply migrations
-        env: { ConnectionStrings__Default: ${{ steps.sec.outputs.conn }} }
+        env:
+          ConnectionStrings__Default: ${{ steps.sec.outputs.conn }}
         run: dotnet ef database update --project src/SurlesMobile.Api.csproj --startup-project src/SurlesMobile.Api.csproj
