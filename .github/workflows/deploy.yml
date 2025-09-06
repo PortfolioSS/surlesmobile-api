@@ -24,7 +24,7 @@ jobs:
       - name: Build + Push
         run: |
           IMAGE_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO --query 'repositories[0].repositoryUri' --output text)
-          docker build -t $IMAGE_URI:latest .
+          docker build -f Dockerfile.simple -t $IMAGE_URI:latest .
           docker push $IMAGE_URI:latest
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
       - name: Force ECS deploy
